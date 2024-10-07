@@ -12,11 +12,11 @@ if (!process.env.GITHUB_TOKEN) {
 const token = process.env.GITHUB_TOKEN;
 
 app.use(
-  "/status-board/",
+  "/raw-github-content/",
   createProxyMiddleware({
     target: `https://raw.githubusercontent.com`,
     changeOrigin: true,
-    pathRewrite: { [`^/status-board/`]: "/" },
+    pathRewrite: { [`^/raw-github-content/`]: "/" },
     on: {
       proxyReq(proxyReq, req, res) {
         proxyReq.setHeader("Authorization", `Bearer ${token}`);
@@ -26,14 +26,13 @@ app.use(
 );
 
 app.use(
-  "/status-board/repos",
+  "/api-github-content/",
   createProxyMiddleware({
     target: `https://api.github.com`,
     changeOrigin: true,
-    pathRewrite: { [`^/status-board/`]: "/" },
+    pathRewrite: { [`^/api-github-content/`]: "/" },
     on: {
       proxyReq(proxyReq, req, res) {
-        console.log(proxyReq, "Hit");
         proxyReq.setHeader("Authorization", `Bearer ${token}`);
       },
     },
