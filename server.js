@@ -1,8 +1,8 @@
 const express = require("express");
-const morgan = require("morgan");
 require("dotenv").config();
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
+const cors = require('cors')
 const app = express();
 
 if (!process.env.GITHUB_TOKEN) {
@@ -39,6 +39,8 @@ app.use(
     },
   })
 );
+
+app.use(cors())
 
 app.listen(3000, () => {
   console.log("Server listening on port ", 3000);
