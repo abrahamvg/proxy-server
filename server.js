@@ -1,14 +1,21 @@
 const express = require('express');
+require('dotenv').config();
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
 
-app.use('/status-board/[my-organization-name]', createProxyMiddleware({
+if (!process.env.GITHUB_TOKEN) {
+    throw new Error('Missing GITHUB_TOKEN');
+}
+
+const token = process.env.GITHUB_TOKEN;
+
+app.use('/status-board/', createProxyMiddleware({
   target: `https://raw.githubusercontent.com`,
   changeOrigin: true,
   pathRewrite: {[`^/status-board/`]: '/'},
   onProxyReq(proxyReq, req, res) {
-    proxyReq.setHeader('Authorization', 'Bearer [my-token]');
+    proxyReq.setHeader('Authorization', `Bearer ${token}`);
   }
 }));
 
@@ -17,7 +24,7 @@ app.use('/status-board/repos', createProxyMiddleware({
   changeOrigin: true,
   pathRewrite: {[`^/status-board/`]: '/'},
   onProxyReq(proxyReq, req, res) {
-    proxyReq.setHeader('Authorization', 'Bearer [my-token]');
+    proxyReq.setHeader('Authorization', `Bearer ${token}`);
   }
 }));
 
